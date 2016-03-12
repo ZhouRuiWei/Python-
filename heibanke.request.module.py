@@ -1,18 +1,20 @@
-#ºÚ°å¿ÎÅÀ³æ
+# -*- coding: utf-8 -*-
+
+#é»‘æ¿è¯¾ç¬¬ä¸€å…³
 import requests
 import re
 
-# µÚÒ»ÌâÍøÖ·
+# ç¬¬ä¸€é¢˜ç½‘å€
 Q1 = r'http://www.heibanke.com/lesson/crawler_ex00/'
 
 url = Q1
 num_re = re.compile(r'<h3>[^\d<]*?(\d+)[^\d<]*?</h3')
 while True:
-    print'ÕıÔÚ¶ÁÈ¡ÍøÖ·:',url
+    print'æ­£åœ¨è¯»å–ç½‘å€:',url
     html = requests.get(url).text
     num = num_re.findall(html)
     if len(num) == 0:
         break
     else:
         url = Q1 + num[0]
-print('½áÊø£¡')
+print('ç»“æŸï¼')
