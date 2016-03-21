@@ -19,21 +19,53 @@ if dr:
         print file
     print '*****************************'
     print 'there are %d files'  %len(files)
-#输入新名字或者把已有的变量作为新名字
-#while True:
-#    newname=list(raw_input('please input new names(seperated by space):'))
-#    if len(newname)==len(files):
-#        break
-#    else:
-#        print 'wrong number of newnames'
 
-
-
-
+#获取扩展名
+extension=[]
 i = 0
 for file in files:
     namext = os.path.splitext(files[i])
-    extension =namext[1]
-    print extension
-    os.rename(file,newname[i]+extension)
+    extension.append(namext[1])
     i+=1
+	
+
+def userinput():   #让用户从键盘输入新名字的模式
+
+    #输入新名字
+    newnames = []
+    i = 0
+    while i<len(files):
+        onename=raw_input('please input new names of file '+str(i+1)+':')+extension[i]
+        if onename in newnames or onename in files[(i+1):]:                                                                                                                                                           
+            print 'name already exist! please input another name'
+            continue
+        newnames.append(onename)
+        i+=1
+
+
+
+    #重命名
+    print'******newnames*******'
+    for i in range(len(files)):
+        os.rename(files[i],newnames[i])
+        print newnames[i]
+
+
+		
+def series():
+    name = raw_input('please enter half of the name without number')
+    print'******newnames*******'
+    for i in range(len(files)):
+        os.rename(files[i],name+str(i+1)+extension[i])
+        print name+str(i+1)+extension[i]
+
+		
+		
+		
+		
+		
+print'''now,if you like to input every newname,please enter 1;
+if you like to rename the files with names like file1,file2...please enter 2'''
+choice = raw_input('your choice:')
+choices={1:userinput,2:series}
+choices[int(choice)]()
