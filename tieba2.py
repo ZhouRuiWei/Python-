@@ -3,7 +3,7 @@ import urllib2,re
 
 tiezi = raw_input('请输入帖子地址：')
 def geturl(i):
-    url =tiezi+'?see_lz=1'+'&pn='+str(i)
+    url =tiezi+'?see_lz=1'+'&pn='+str(i)                  #只看楼主模式
     req = urllib2.urlopen(url).read().decode('utf-8')
     return req
 
@@ -20,7 +20,7 @@ def gettitle(req):
 
 	
 def getcontent(req):
-    pat2 = re.compile(r'id="post_content.*?>(.*?)</div>')
+    pat2 = re.compile(r'id="post_content.*?>(.*?)</div>')    #最最普通的文本，其他较特殊 的情况还需要根据实际情况另外写正则
     txt = pat2.findall(req,re.S)
     return txt
  
