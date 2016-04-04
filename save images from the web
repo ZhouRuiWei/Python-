@@ -1,0 +1,71 @@
+#-*- coding:gbk-*-
+
+import urllib
+import re
+import os
+
+
+#输入页数，得到从第一页开始到这一页结束的所有模特名字以及主页链接
+def getlists(number):
+    url = 'https://mm.taobao.com/json/request_top_list.htm?page='
+    names = []
+    urls = []
+    pat1 = re.compile(r'<a class=.*?href="(.*?)".*?>(.*?)</a>')
+    for i in range(number):
+        oneurl = url+str(i+1)
+        urlcode = urllib.urlopen(oneurl).read().decode('gbk')
+        items = pat1.findall(urlcode)
+    for item in items:
+        names.append(item[1])
+        urls.append('http:'+item[0])
+    return (names,urls)
+
+#得到每个模特所有相册的链接
+def gotoalbums(onegirl):
+    girl = urllib.urlopen(onegirl).read()
+    pat2 = re.compile(r'<a href="(.*?)"*?>相册</a>')
+    temp = pat2.findall(girl)
+    albumsurl = 'http:'+temp[0]
+    albums = urllib.urlopen(albumsurl).read().decode('gbk')
+    pat3 = re.compile(r'<a href=(.*?) data.*?>.*?</a>')
+    albumlisttemp = pat3.findall(albums)
+    albumlist = ['http:'+x for x in albumlisttemp]
+    return albumlist
+
+#输入相册地址，得到每个图片链接
+def getimagurls(album):
+    temp = urllib.urlopen(album).read()
+    pat4 = re.compile('<imag class=.*?src="(.*?)".*?></a>')
+    imags = pat4.findall(temp)
+    imagurls = ['http:'+x for x in imags]
+    return imagurls
+
+#输入一张图片的地址，得到并保存图片
+def saveimage(imagurl,filename):
+    u = urllib.urlopen(imageURL).read()
+    f = open(fileName, 'wb')
+    f.write(data)
+    f.close()
+
+#创建每个模特的文件夹并且将当前工作路径转移到这里
+def makefolders(name):
+    dir = r'd:/temp/'+name
+    if os.path.isdir(dir):
+        pass
+    else:
+        os.mkdir(dir)
+    os.chdir(dir)
+
+#主程序
+(names,urls)=getlists(1)
+for i in range(len(names)):
+    makefolders(names[i])
+    albumlist = gotoalbums(urls[i])
+    print u'正在保存第'+str(i+1)+u'位模特的图片'
+    for album in albumlist:
+        imagurls = getimagurls(album)
+        for j in range(len(imagurls)):
+            saveimag(imag[j],str(j)+'.jpg')
+
+
+		
