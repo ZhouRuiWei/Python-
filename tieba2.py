@@ -1,10 +1,12 @@
 #-*- coding: utf-8 -*-
-import urllib2,re
+
+import urllib,re,os
+from bs4 import BeautifulSoup
 
 tiezi = raw_input('请输入帖子地址：')
 def geturl(i):
-    url =tiezi+'?see_lz=1'+'&pn='+str(i)                  #只看楼主模式
-    req = urllib2.urlopen(url).read().decode('utf-8')
+    url =tiezi+'?see_lz=1'+'&pn='+str(i)
+    req = urllib.urlopen(url).read().decode('utf-8')
     return req
 
 def getpagenumber(req):
@@ -20,22 +22,24 @@ def gettitle(req):
 
 	
 def getcontent(req):
-    pat2 = re.compile(r'id="post_content.*?>(.*?)</div>')    #最最普通的文本，其他较特殊 的情况还需要根据实际情况另外写正则
-    txt = pat2.findall(req,re.S)
-    return txt
+    soup = BeautifulSoup(req)
+    contents = soup.findAll("div",{"id":re.compile("post_content.*")})
+    return contents
  
 tempreq = geturl(1)   
 number = getpagenumber(tempreq)[0]
-print number
+print u"楼主一共发布了"+number+u"页的帖子"
 title = gettitle(tempreq)
 f = open(title+'.txt','w')
-for i in range(int(number)+1):
-    req = geturl(i)
+for i in range(int(number)):
+    print u"正在读取第"+str(i+1)+"页的内容"
+    req = geturl(i+1)
     txt = getcontent(req)
     for eachitem in txt:
-        f.write(eachitem.replace('<br>',''))
-        f.write('\n')
+        f.write(eachitem.get_text())
+        f.write("\n")
 f.close()
+print u"已经保存到本地"+os.getcwd()
 
 
 
